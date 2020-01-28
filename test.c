@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #define TEST_LINE_NUM 1000
+#define MAP_SIZE 1024
 
 typedef struct _pos
 {
@@ -28,6 +29,25 @@ void create_test_line()
 	}
 }
 
+typedef struct _line_list
+{
+	struct _line_list *next;
+	line *line;
+} line_list;
+
+typedef struct _tree
+{
+	int l;   //left
+	int r;   //right
+	int t;   //top
+	int b;   //bottom
+	int lr;  //middle of left and right
+	int tb;  //middle of top and bottom
+	line_list lines;
+	struct _tree *next[4]; //0-3 left_top, right_top, left_bottom, right_bottom
+} tree;
+
+static tree *g_tree;
 void create_4cross_tree()
 {
 }
