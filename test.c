@@ -28,8 +28,19 @@ void create_test_line()
 	}
 }
 
+void create_4cross_tree()
+{
+}
+
+void do_test()
+{
+}
+
 int main(int argc, char *argv[])
 {
 	srandom(100);
+	create_test_line();
+	create_4cross_tree();
+	do_test();
 	return 0;
 }
