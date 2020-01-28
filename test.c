@@ -4,6 +4,10 @@
 #define TEST_LINE_NUM 1000
 #define MAP_SIZE 1024
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 typedef struct _pos
 {
 	int x;
@@ -43,13 +47,32 @@ typedef struct _tree
 	int b;   //bottom
 	int lr;  //middle of left and right
 	int tb;  //middle of top and bottom
-	line_list lines;
+	line_list *lines;
 	struct _tree *next[4]; //0-3 left_top, right_top, left_bottom, right_bottom
 } tree;
+
+tree *create_tree()
+{
+	tree *ret = (tree *)malloc(sizeof(tree));
+	ret->lines = NULL;
+	for (int i = 0; i < 4; ++i) {
+		ret->next[i] = NULL;
+	}
+	return ret;
+}
 
 static tree *g_tree;
 void create_4cross_tree()
 {
+	g_tree = create_tree();
+	g_tree->l = g_tree->b = 0;
+	g_tree->r = g_tree->t = MAP_SIZE;
+	g_tree->lr = g_tree->tb = MAP_SIZE / 2;
+
+	for (int i = 0; i < TEST_LINE_NUM; ++i)
+	{
+		
+	}
 }
 
 void do_test()
