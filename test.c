@@ -4,6 +4,7 @@
 
 #define TEST_LINE_NUM 1000
 #define MAP_SIZE 1024
+#define TREE_DEPTH 4
 
 #ifndef NULL
 #define NULL 0
@@ -77,6 +78,7 @@ typedef struct _tree
 	int tb;  //middle of top and bottom
 	struct linehead linehead;
 	struct _tree *next[4]; //0-3 left_top, right_top, left_bottom, right_bottom
+	struct _tree *parent;
 } tree;
 
 tree *create_tree()
@@ -128,13 +130,68 @@ void add_line_to_tree(line *l, tree *t)
 	LIST_INSERT_HEAD(&t->linehead, l, entries);
 }
 
+static void create_sub_tree(tree *t)
+{
+	t->next[0]         = create_tree();
+	t->next[0]->parent = t;
+	t->next[0]->l      = t->l;
+	t->next[0]->b      = t->tb;
+	t->next[0]->r      = t->lr;
+	t->next[0]->t      = t->t;
+	t->next[0]->tb     = (t->next[0]->t - t->next[0]->b) / 2;
+	t->next[0]->lr     = (t->next[0]->r - t->next[0]->l) / 2;
+
+	t->next[1]         = create_tree();
+	t->next[1]->parent = t;
+	t->next[1]->l      = t->lr;
+	t->next[1]->r      = t->r;
+	t->next[1]->b      = t->tb;
+	t->next[1]->t      = t->t;
+	t->next[1]->tb     = (t->next[1]->t - t->next[1]->b) / 2;
+	t->next[1]->lr     = (t->next[1]->r - t->next[1]->l) / 2;	
+
+	t->next[2]         = create_tree();
+	t->next[2]->parent = t;
+	t->next[2]->l      = t->l;
+	t->next[2]->r      = t->lr;
+	t->next[2]->b      = t->b;
+	t->next[2]->t      = t->tb;
+	t->next[2]->tb     = (t->next[2]->t - t->next[2]->b) / 2;
+	t->next[2]->lr     = (t->next[2]->r - t->next[2]->l) / 2;	
+
+	t->next[3]         = create_tree();
+	t->next[3]->parent = t;
+	t->next[3]->l      = t->lr;
+	t->next[3]->r      = t->r;
+	t->next[3]->b      = t->b;
+	t->next[3]->t      = t->tb;
+	t->next[3]->tb     = (t->next[3]->t - t->next[3]->b) / 2;
+	t->next[3]->lr     = (t->next[3]->r - t->next[3]->l) / 2;	
+}
+
 static tree *g_tree;
 void create_4cross_tree()
 {
 	g_tree = create_tree();
+	g_tree->parent = NULL;
 	g_tree->l = g_tree->b = 0;
 	g_tree->r = g_tree->t = MAP_SIZE;
 	g_tree->lr = g_tree->tb = MAP_SIZE / 2;
+
+	tree *t = g_tree;
+	for (int i = 0; i < TREE_DEPTH; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			t->next[j] = create_tree();
+			t->l = 0;
+			t->b = 0;
+			t->r = 0;
+			t->t = MAP_SIZE;
+			t->lr = 0;
+			t->tb = MAP_SIZE / 2;
+		}
+	}
 
 	for (int i = 0; i < TEST_LINE_NUM; ++i)
 	{
