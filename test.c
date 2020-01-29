@@ -20,7 +20,7 @@ typedef struct _line
 	pos s;
 	pos e;
 	int index;
-	LIST_ENTRY(_line);
+	LIST_ENTRY(_line) entries;
 } line;
 
 static line test_line[TEST_LINE_NUM];
@@ -66,13 +66,7 @@ void create_test_line()
 	qsort(&sorty_line[0], TEST_LINE_NUM, sizeof(int), compar_y);	
 }
 
-typedef struct _line_list
-{
-	struct _line_list *next;
-	line *line;
-} line_list;
-LIST_HEAD(linehead, line);
-
+LIST_HEAD(linehead, _line);
 typedef struct _tree
 {
 	int l;   //left
@@ -93,6 +87,45 @@ tree *create_tree()
 		ret->next[i] = NULL;
 	}
 	return ret;
+}
+
+//0-3 left_top, right_top, left_bottom, right_bottom  -1: cur
+int get_tree_pos(line *l, tree *t)
+{
+	if (l->e.x < t->lr) //left
+	{
+		if (l->e.y < t->tb) //bottom
+		{
+			return 2;
+		}
+		else  //top
+		{
+			if (l->s.y < t->tb)
+				return -1;
+			return 0;
+		}
+	}
+	else //right
+	{
+		if (l->s.x < t->lr)
+			return -1;
+		if (l->e.y < t->tb) //bottom
+		{
+			return 3;
+		}
+		else  //top
+		{
+			if (l->s.y < t->tb)
+				return -1;
+			return 1;
+		}
+	}
+	return -1;
+}
+
+void add_line_to_tree(line *l, tree *t)
+{
+	LIST_INSERT_HEAD(&t->linehead, l, entries);
 }
 
 static tree *g_tree;
