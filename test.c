@@ -135,8 +135,10 @@ void add_line_to_tree(line *l, tree *t)
 
 static void create_sub_tree(tree *t)
 {
+	int depth = t->depth + 1;
 	t->next[0]         = create_tree();
 	t->next[0]->parent = t;
+	t->next[0]->depth  = depth;
 	t->next[0]->l      = t->l;
 	t->next[0]->b      = t->tb;
 	t->next[0]->r      = t->lr;
@@ -146,6 +148,7 @@ static void create_sub_tree(tree *t)
 
 	t->next[1]         = create_tree();
 	t->next[1]->parent = t;
+	t->next[1]->depth  = depth;	
 	t->next[1]->l      = t->lr;
 	t->next[1]->r      = t->r;
 	t->next[1]->b      = t->tb;
@@ -155,6 +158,7 @@ static void create_sub_tree(tree *t)
 
 	t->next[2]         = create_tree();
 	t->next[2]->parent = t;
+	t->next[2]->depth  = depth;	
 	t->next[2]->l      = t->l;
 	t->next[2]->r      = t->lr;
 	t->next[2]->b      = t->b;
@@ -164,12 +168,21 @@ static void create_sub_tree(tree *t)
 
 	t->next[3]         = create_tree();
 	t->next[3]->parent = t;
+	t->next[3]->depth  = depth;	
 	t->next[3]->l      = t->lr;
 	t->next[3]->r      = t->r;
 	t->next[3]->b      = t->b;
 	t->next[3]->t      = t->tb;
 	t->next[3]->tb     = (t->next[3]->t - t->next[3]->b) / 2;
-	t->next[3]->lr     = (t->next[3]->r - t->next[3]->l) / 2;	
+	t->next[3]->lr     = (t->next[3]->r - t->next[3]->l) / 2;
+
+	if (depth < TREE_DEPTH)
+	{
+		create_sub_tree(t->next[0]);
+		create_sub_tree(t->next[1]);
+		create_sub_tree(t->next[2]);
+		create_sub_tree(t->next[3]);
+	}
 }
 
 static tree *g_tree;
