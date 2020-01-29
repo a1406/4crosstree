@@ -131,6 +131,7 @@ int get_tree_pos(line *l, tree *t)
 void add_line_to_tree(line *l, tree *t)
 {
 	LIST_INSERT_HEAD(&t->linehead, l, entries);
+	t->line_count++;
 }
 
 static void create_sub_tree(tree *t)
@@ -192,17 +193,12 @@ void add_line(line *l)
 	for (;;)
 	{
 		int pos = get_tree_pos(l, t);
-		if (pos < 0)
+		if (pos < 0 || !t->next[pos])
 		{
 			add_line_to_tree(l, t);
 			return;
 		}
 		t = t->next[pos];
-		if (!t)
-		{
-			add_line_to_tree(l, t);			
-			return;
-		}
 	}
 }
 void create_4cross_tree()
