@@ -138,7 +138,7 @@ void create_4cross_tree()
 
 	for (int i = 0; i < TEST_LINE_NUM; ++i)
 	{
-		
+		add_line_to_tree(&test_line[i], g_tree);
 	}
 }
 
