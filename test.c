@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/queue.h>
 
 #define TEST_LINE_NUM 1000
 #define MAP_SIZE 1024
@@ -19,6 +20,7 @@ typedef struct _line
 	pos s;
 	pos e;
 	int index;
+	LIST_ENTRY(_line);
 } line;
 
 static line test_line[TEST_LINE_NUM];
@@ -69,6 +71,7 @@ typedef struct _line_list
 	struct _line_list *next;
 	line *line;
 } line_list;
+LIST_HEAD(linehead, line);
 
 typedef struct _tree
 {
@@ -78,14 +81,14 @@ typedef struct _tree
 	int b;   //bottom
 	int lr;  //middle of left and right
 	int tb;  //middle of top and bottom
-	line_list *lines;
+	struct linehead linehead;
 	struct _tree *next[4]; //0-3 left_top, right_top, left_bottom, right_bottom
 } tree;
 
 tree *create_tree()
 {
 	tree *ret = (tree *)malloc(sizeof(tree));
-	ret->lines = NULL;
+	LIST_INIT(&ret->linehead);
 	for (int i = 0; i < 4; ++i) {
 		ret->next[i] = NULL;
 	}
