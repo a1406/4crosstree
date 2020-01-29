@@ -18,19 +18,50 @@ typedef struct _line
 {
 	pos s;
 	pos e;
+	int index;
 } line;
 
 static line test_line[TEST_LINE_NUM];
+static int  sortx_line[TEST_LINE_NUM];
+static int  sorty_line[TEST_LINE_NUM];
+
+int compar_x(const void *a, const void *b)
+{
+	line *la = &test_line[*(int *)a];
+	line *lb = &test_line[*(int *)b];
+	if (la->s.x > lb->s.x)
+		return 1;
+	if (la->s.x < lb->s.x)
+		return -1;	
+	return (0);
+}
+int compar_y(const void *a, const void *b)
+{
+	line *la = &test_line[*(int *)a];
+	line *lb = &test_line[*(int *)b];
+	if (la->s.y > lb->s.y)
+		return 1;
+	if (la->s.y < lb->s.y)
+		return -1;	
+	return (0);
+}
+
 void create_test_line()
 {
 	for (int i = 0; i < TEST_LINE_NUM; ++i)
 	{
+		sortx_line[i] = i;
+		sorty_line[i] = i;		
+		
+		test_line[i].index = i;
 		test_line[i].s.x = random() % 1000;
 		test_line[i].s.y = random() % 1000;
 
 		test_line[i].e.x = test_line[i].s.x + random() % 24;
 		test_line[i].e.y = test_line[i].s.y + random() % 24;		
 	}
+	qsort(&sortx_line[0], TEST_LINE_NUM, sizeof(int), compar_x);
+	qsort(&sorty_line[0], TEST_LINE_NUM, sizeof(int), compar_y);	
 }
 
 typedef struct _line_list
