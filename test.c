@@ -77,14 +77,17 @@ typedef struct _tree
 	int lr;  //middle of left and right
 	int tb;  //middle of top and bottom
 	struct linehead linehead;
+	int line_count;
 	struct _tree *next[4]; //0-3 left_top, right_top, left_bottom, right_bottom
 	struct _tree *parent;
+	int depth;
 } tree;
 
 tree *create_tree()
 {
 	tree *ret = (tree *)malloc(sizeof(tree));
 	LIST_INIT(&ret->linehead);
+	ret->line_count = 0;
 	for (int i = 0; i < 4; ++i) {
 		ret->next[i] = NULL;
 	}
@@ -174,6 +177,7 @@ void create_4cross_tree()
 {
 	g_tree = create_tree();
 	g_tree->parent = NULL;
+	g_tree->depth = 0;
 	g_tree->l = g_tree->b = 0;
 	g_tree->r = g_tree->t = MAP_SIZE;
 	g_tree->lr = g_tree->tb = MAP_SIZE / 2;
