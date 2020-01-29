@@ -186,6 +186,25 @@ static void create_sub_tree(tree *t)
 }
 
 static tree *g_tree;
+void add_line(line *l)
+{
+	tree *t = g_tree;
+	for (;;)
+	{
+		int pos = get_tree_pos(l, t);
+		if (pos < 0)
+		{
+			add_line_to_tree(l, t);
+			return;
+		}
+		t = t->next[pos];
+		if (!t)
+		{
+			add_line_to_tree(l, t);			
+			return;
+		}
+	}
+}
 void create_4cross_tree()
 {
 	g_tree = create_tree();
@@ -195,24 +214,11 @@ void create_4cross_tree()
 	g_tree->r = g_tree->t = MAP_SIZE;
 	g_tree->lr = g_tree->tb = MAP_SIZE / 2;
 
-	tree *t = g_tree;
-	for (int i = 0; i < TREE_DEPTH; ++i)
-	{
-		for (int j = 0; j < 4; ++j)
-		{
-			t->next[j] = create_tree();
-			t->l = 0;
-			t->b = 0;
-			t->r = 0;
-			t->t = MAP_SIZE;
-			t->lr = 0;
-			t->tb = MAP_SIZE / 2;
-		}
-	}
+	create_sub_tree(g_tree);
 
 	for (int i = 0; i < TEST_LINE_NUM; ++i)
 	{
-		add_line_to_tree(&test_line[i], g_tree);
+		add_line(&test_line[i]);
 	}
 }
 
